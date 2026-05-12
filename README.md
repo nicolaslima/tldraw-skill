@@ -1,6 +1,6 @@
 # tldraw-skill — From Text to Whiteboard Diagrams
 
-[中文文档](README_CN.md)
+[中文文档](README_CN.md) | [Online Docs](https://agents365-ai.github.io/tldraw-skill/)
 
 A skill that turns natural-language descriptions into hand-drawn-style `.tldr` whiteboard diagrams and exports them to PNG / SVG via `@kitschpatrol/tldraw-cli` — with 6 diagram presets (Architecture, Flowchart, Sequence, ML/DL, ERD, UML), a vision-based self-check loop that auto-fixes overlaps and clipped labels, and an iterative review loop with a 5-round safety valve.
 

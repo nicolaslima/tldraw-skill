@@ -1,6 +1,6 @@
 # tldraw-skill —— 从文字到白板风格图表
 
-[English](README.md)
+[English](README.md) | [在线文档](https://agents365-ai.github.io/tldraw-skill/zh.html)
 
 一个把自然语言变成手绘白板风格 `.tldr` 图表,并通过 `@kitschpatrol/tldraw-cli` 自动导出为 PNG / SVG 的技能 —— 内置 6 种图表预设(架构图、流程图、时序图、ML/DL、ER 图、UML 类图)、基于视觉的自检循环(自动修复重叠与文字截断)、以及最多 5 轮安全阀的迭代评审循环。
 
