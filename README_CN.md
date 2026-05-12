@@ -1,75 +1,33 @@
-# tldraw-skill — 从文字到白板风格图表
+# tldraw-skill —— 从文字到白板风格图表
 
 [English](README.md)
 
-## 功能说明
+一个把自然语言变成手绘白板风格 `.tldr` 图表,并通过 `@kitschpatrol/tldraw-cli` 自动导出为 PNG / SVG 的技能 —— 内置 6 种图表预设(架构图、流程图、时序图、ML/DL、ER 图、UML 类图)、基于视觉的自检循环(自动修复重叠与文字截断)、以及最多 5 轮安全阀的迭代评审循环。
 
-- 根据自然语言描述生成 `.tldr` JSON 文件
-- 使用 `@kitschpatrol/tldraw-cli` 将图表导出为 PNG 或 SVG
-- **6 种图表类型预设**：架构图、流程图、时序图、ML/深度学习模型图、ER 图、UML 类图 —— 每种类型都有预设的形状词汇和布局规范
-- **自检循环**：使用视觉能力读取导出的 PNG，自动修复重叠、文字截断和缺失箭头等问题
-- **迭代评审循环**：收集反馈，应用精准 JSON 编辑，重新导出直至确认（最多 5 轮安全阀）
-- **复杂度自适应布局**：间距随节点数自动放大，防止重叠
-- **自动更新**：每 24 小时检查一次最新版本
-- **自定义输出目录**：支持任意输出路径（如 `./artifacts/`），自动创建目录
-- 当图表有助于解释复杂系统时自动触发
-- 默认手绘白板风格，可切换为干净字体
+支持 Claude Code、Cursor、Copilot、OpenClaw、Codex、Hermes 等任何兼容 [Agent Skills](https://agentskills.io) 规范的 agent。
 
-## 对比
+## 文档导航
 
-### vs 原生 Agent（无 skill）
+| 文档 | 内容 |
+|---|---|
+| [docs/features_CN.md](docs/features_CN.md) | 完整功能列表、与原生 / drawio / mermaid / excalidraw 的对比、支持的图表类型 |
+| [docs/limitations_CN.md](docs/limitations_CN.md) | 已知限制(UML 标记、PDF 导出、视觉能力要求) |
+| [skills/tldraw-skill/SKILL.md](skills/tldraw-skill/SKILL.md) | agent 加载的工作流指南 |
 
-| 特性 | 原生 Agent | 本 skill |
-|------|-----------|---------|
-| 生成 `.tldr` JSON | 部分 —— LLM 经常产出 schema 不合规的记录 | ✅ schema 正确的骨架 + 记录模板 |
-| 导出后自检 | ❌ | ✅ 读取 PNG 自动修复 6 类问题 |
-| 迭代评审循环 | ❌ —— 需手动反复 prompt | ✅ 精准编辑，5 轮安全阀 |
-| 主动触发 | ❌ —— 只有显式要求才触发 | ✅ 检测到 3+ 组件自动建议 |
-| 布局规范 | 无 —— 每次结果不一致 | 复杂度自适应间距、路由走廊、枢纽节点居中 |
-| 图表类型预设 | ❌ | ✅ 6 种（架构、流程、时序、ML/DL、ERD、UML） |
-| 配色方案 | 随机 / 不一致 | 10 色语义系统（蓝=服务，绿=DB，紫=认证……） |
-| 箭头分布规则 | 基础 | `normalizedAnchor` 在形状边缘均匀分布，避免堆叠 |
-| Index 排序规则 | 经常错误（用 `b1`、`c1`） | 严格 `a*` 格式，含 z-order 约定 |
-| 多平台元数据 | ❌ | ✅ OpenClaw、Hermes、SkillsMP 命名空间 |
+## 快速开始
 
-### vs 其他图表 skill
-
-| 特性 | tldraw-skill | drawio-skill | mermaid-skill | excalidraw-skill |
-|------|--------------|--------------|---------------|------------------|
-| **风格** | 手绘白板 | 干净专业 | 自动布局文字 | 草图非正式 |
-| **格式** | `.tldr` JSON | `.drawio` XML | 文本 DSL | `.excalidraw` JSON |
-| **导出格式** | PNG, SVG | PNG, SVG, PDF, JPG | PNG, SVG, PDF | PNG, SVG |
-| **手动布局控制** | ✅ x/y 坐标 | ✅ x/y 坐标 | ❌ 仅自动布局 | ✅ x/y 坐标 |
-| **自检循环** | ✅ 基于视觉 | ✅ 基于视觉 | 部分 | 部分 |
-| **图表预设** | ✅ 6 种 | ✅ 6 种 | 由文本语法驱动 | 无 |
-| **样式预设** | ❌ | ✅ 用户可学习 | ❌ | ❌ |
-| **适合场景** | 白板草图、轻量解释、内部文档 | 商务/学术正式图 | 文档中的快速文转图 | 手绘风格演示 |
-
-## 支持的图表类型
-
-- **架构图**：微服务、云架构、部署 —— 按层着色、枢纽节点居中
-- **流程图**：业务流程、决策树、状态机 —— 语义化形状类型
-- **时序图**：用矩形 + 水平箭头近似演员消息流
-- **ML/深度学习**：按层类型着色、张量形状标注
-- **ERD**：实体用多行文本矩形，箭头标注基数
-- **UML 类图**：类用多行文本矩形，关系用不同箭头
-
-## 依赖项
+安装依赖:
 
 ```bash
-# 安装 tldraw-cli
-npm install -g @kitschpatrol/tldraw-cli
-
-# 验证
-tldraw --version
+npm install -g @kitschpatrol/tldraw-cli && tldraw --version
 ```
 
-需要 Node.js（npm）。所有平台安装方式完全一致 —— 无需额外配置，无需浏览器自动化。
+需要 Node.js(npm)。macOS / Windows / Linux 安装方式一致,无需浏览器自动化。
 
-## 安装
+安装技能:
 
 ```bash
-# 任意 Agent（Claude Code、Cursor、Copilot 等）
+# 任意 Agent(Claude Code、Cursor、Copilot 等)
 npx skills add Agents365-ai/365-skills -g
 
 # 仅 Claude Code
@@ -77,76 +35,34 @@ npx skills add Agents365-ai/365-skills -g
 > /plugin install tldraw
 ```
 
-手动安装 —— 克隆到你的 Agent skills 目录：
+手动安装 —— 克隆到你的 agent skills 目录:
 
 ```bash
 git clone https://github.com/Agents365-ai/tldraw-skill.git ~/.claude/skills/tldraw-skill
 ```
 
-常用路径：`~/.claude/skills/`（Claude Code）、`~/.config/opencode/skills/`（Opencode）、`~/.openclaw/skills/`（OpenClaw）、`~/.agents/skills/`（Codex）。同时已索引于 [SkillsMP](https://skillsmp.com) 和 [ClawHub](https://clawhub.ai/agents365-ai/tldraw-pro-skill)。
-
-## 更新
-
-skill 在每次会话首次使用时（每 24 小时一次）自动检查更新（一次 `git pull --ff-only`）。已是最新版、离线、或非 git 安装时会静默跳过 —— 不会阻塞或拖慢工作流。
-
-手动更新：
-
-```bash
-cd <你的安装路径>/tldraw-skill && git pull
-```
-
-包管理器安装的版本由其自己管理更新：
-
-```bash
-# ClawHub
-clawhub update tldraw-pro-skill
-```
+常用路径:`~/.claude/skills/`(Claude Code)、`~/.config/opencode/skills/`(Opencode)、`~/.openclaw/skills/`(OpenClaw)、`~/.agents/skills/`(Codex)。同时已索引于 [SkillsMP](https://skillsmp.com) 与 [ClawHub](https://clawhub.ai/agents365-ai/tldraw-pro-skill)。
 
 ## 使用方式
 
-直接描述你想要的图表：
+直接描述你想要的图表:
 
 ```
-画一个微服务电商架构图，包含 API Gateway、用户/订单/商品/支付服务、
-Kafka 消息队列、通知服务，以及各自独立的数据库
+画一个微服务电商架构图,包含 API Gateway、用户/订单/商品/支付服务、
+Kafka 消息队列、通知服务,以及各自独立的数据库
 ```
 
-Agent 会规划布局、生成 `.tldr` JSON、导出 PNG、自检，然后让你迭代。
+Agent 会规划布局、生成 `.tldr` JSON、导出 PNG、自检,然后让你迭代。
 
 ## 示例
 
-**提示词：**
-> 画一个微服务电商架构图，包含 Mobile/Web/Admin 客户端，API Gateway，
-> User/Order/Product/Payment 微服务，Kafka 事件总线，Notification 服务，
-> User DB / Order DB / Product DB / Redis Cache / Stripe API
-
-**输出效果：**
+**提示词:** *画一个微服务电商架构图,包含 Mobile/Web/Admin 客户端,API Gateway,User/Order/Product/Payment 微服务,Kafka 事件总线,Notification 服务,User DB / Order DB / Product DB / Redis Cache / Stripe API*
 
 ![微服务架构图](assets/example.png)
 
-## 文件说明
-
-- `SKILL.md` —— **唯一必需文件**。所有平台都加载此文件作为 skill 指令
-- `README.md` —— 英文说明（GitHub 主页显示）
-- `README_CN.md` —— 本文件（中文）
-- `assets/` —— 示例图表（可安全删除以节省空间）
-
-> 所有示例图表均由 Claude 使用本 skill 生成。
-
-## 已知限制
-
-- **原生 UML 标记**：tldraw 箭头有限（不支持继承所需的空心三角形）。学术论文中的严格 UML/ERD 图请使用 drawio-skill
-- **无原生容器/泳道**：tldraw 的分组模型与 drawio 不同。请用颜色和间距实现视觉分组
-- **不支持 PDF 导出**：tldraw-cli 仅支持 PNG 和 SVG。如需 PDF，可将 SVG 后处理转换（如 `rsvg-convert`）
-- **自检需要视觉能力**：自动修复步骤通过模型的视觉能力读取 PNG。不支持视觉的模型会跳过此步
-
-## 开源协议
-
-MIT
-
 ## 支持作者
 
-如果这个 skill 对你有帮助，欢迎支持作者：
+如果这个 skill 对你有帮助,欢迎支持作者:
 
 <table>
   <tr>
@@ -179,3 +95,7 @@ MIT
 
 - Bilibili: https://space.bilibili.com/441831884
 - GitHub: https://github.com/Agents365-ai
+
+## License
+
+MIT
