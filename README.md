@@ -1,66 +1,152 @@
 # tldraw-skill — From Text to Whiteboard Diagrams
 
-[中文文档](README_CN.md) | [Online Docs](https://agents365-ai.github.io/tldraw-skill/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/Agents365-ai/tldraw-skill?style=flat&logo=github)](https://github.com/Agents365-ai/tldraw-skill/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/Agents365-ai/tldraw-skill?style=flat&logo=github)](https://github.com/Agents365-ai/tldraw-skill/network/members)
+[![Latest Release](https://img.shields.io/github/v/release/Agents365-ai/tldraw-skill?logo=github)](https://github.com/Agents365-ai/tldraw-skill/releases/latest)
+[![Last Commit](https://img.shields.io/github/last-commit/Agents365-ai/tldraw-skill?logo=github)](https://github.com/Agents365-ai/tldraw-skill/commits/main)
 
-A skill that turns natural-language descriptions into hand-drawn-style `.tldr` whiteboard diagrams and exports them to PNG / SVG via `@kitschpatrol/tldraw-cli` — with 6 diagram presets (Architecture, Flowchart, Sequence, ML/DL, ERD, UML), a vision-based self-check loop that auto-fixes overlaps and clipped labels, and an iterative review loop with a 5-round safety valve.
+[![SkillsMP](https://img.shields.io/badge/SkillsMP-listed-1f6feb)](https://skillsmp.com/skills/agents365-ai-tldraw-skill-skills-tldraw-skill-skill-md)
+[![ClawHub](https://img.shields.io/badge/ClawHub-listed-ff6b35)](https://clawhub.ai/agents365-ai/tldraw-pro-skill)
+[![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-plugin-8a2be2)](https://github.com/Agents365-ai/365-skills)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-compatible-2ea44f)](https://agentskills.io)
+[![Discord](https://img.shields.io/badge/Discord-Join-5865F2?logo=discord&logoColor=white)](https://discord.gg/79JF5Atuk)
 
-Works with Claude Code, Cursor, Copilot, OpenClaw, Codex, Hermes, and any agent that supports the [Agent Skills](https://agentskills.io) format.
+**English** · [中文](README_CN.md) · [📖 Online Docs](https://agents365-ai.github.io/tldraw-skill/)
 
-## Documentation
+A skill that turns natural-language descriptions into hand-drawn-style `.tldr` whiteboard diagrams and exports them to PNG / SVG via [`@kitschpatrol/tldraw-cli`](https://github.com/kitschpatrol/tldraw-cli). Works with **Claude Code, Cursor, Copilot, OpenClaw, Codex, Hermes**, and any agent compatible with the [Agent Skills](https://agentskills.io) format.
 
-| Doc | What's inside |
-|---|---|
-| [docs/features.md](docs/features.md) | Full feature list, comparison vs. native / drawio / mermaid / excalidraw, supported diagram types |
-| [docs/limitations.md](docs/limitations.md) | Known limitations (UML notation, PDF export, vision requirement) |
-| [skills/tldraw-skill/SKILL.md](skills/tldraw-skill/SKILL.md) | Workflow guide loaded by the agent |
+<p align="center">
+  <img src="assets/example.png" width="900" alt="Microservices Architecture — generated from a single natural-language prompt">
+</p>
 
-## Quick Start
+## ✨ Highlights
 
-Install dependencies:
+- **6 diagram type presets** — Architecture, Flowchart, Sequence, ML/Deep Learning, ERD, UML
+- **Vision-based self-check + auto-fix** — reads its own PNG output and auto-fixes overlaps, clipped labels, missing arrows, off-canvas shapes, and stacked edges (up to 2 rounds; requires a vision-enabled model)
+- **Iterative review loop** — targeted JSON edits, up to 5 rounds, then suggests opening in tldraw.com for fine-tuning
+- **Complexity-scaled layout** — spacing (200 / 280 / 350px) grows with node count; routing corridors and hub placement built in
+- **Semantic 10-color palette** — `blue` services, `green` databases, `violet` auth, `orange` queues, `yellow` decisions, etc. — consistent across runs
+- **Zero browser automation** — `tldraw-cli` runs anywhere Node runs; identical setup on macOS, Linux, Windows (no Chromium, no Playwright)
 
-```bash
-npm install -g @kitschpatrol/tldraw-cli && tldraw --version
+## 🖼️ Examples
+
+> [!TIP]
+> **The hero image above was generated from this single prompt:**
+
+```
+Create a microservices e-commerce architecture with Mobile/Web/Admin clients,
+API Gateway, User/Order/Product/Payment services, Kafka event bus, Notification
+service, and User DB / Order DB / Product DB / Redis Cache / Stripe API
 ```
 
-Requires Node.js (npm). Works identically on macOS, Windows, and Linux — no browser automation.
+The skill plans shape positions on a 10px grid, distributes arrow endpoints around each node's perimeter, and re-checks the exported PNG to catch overlaps before showing you the result.
 
-Install the skill:
+Full feature breakdown in [docs/features.md](docs/features.md). Known limitations (strict UML notation, PDF export, vision requirement) in [docs/limitations.md](docs/limitations.md).
+
+## 🚀 Installation
+
+### 1. Install `@kitschpatrol/tldraw-cli`
+
+| Platform | Command |
+|----------|---------|
+| **macOS / Linux / Windows** | `npm install -g @kitschpatrol/tldraw-cli` |
+
+Verify with `tldraw --version`. Requires Node.js (npm). No browser automation, no Playwright — `tldraw-cli` runs identically everywhere Node runs.
+
+### 2. Install the skill
 
 ```bash
-# Any agent (Claude Code, Cursor, Copilot, etc.)
+# Any agent (Claude Code, Cursor, Copilot, ...)
 npx skills add Agents365-ai/365-skills -g
+```
 
-# Claude Code only
+```text
+# Claude Code plugin marketplace
 > /plugin marketplace add Agents365-ai/365-skills
 > /plugin install tldraw
 ```
 
-Manual install — clone into your agent's skills directory:
-
 ```bash
-git clone https://github.com/Agents365-ai/tldraw-skill.git ~/.claude/skills/tldraw-skill
+# Manual install
+git clone https://github.com/Agents365-ai/tldraw-skill.git \
+  ~/.claude/skills/tldraw-skill
 ```
 
-Common paths: `~/.claude/skills/` (Claude Code), `~/.config/opencode/skills/` (Opencode), `~/.openclaw/skills/` (OpenClaw), `~/.agents/skills/` (Codex). Also indexed on [SkillsMP](https://skillsmp.com) and [ClawHub](https://clawhub.ai/agents365-ai/tldraw-pro-skill).
+Also indexed on [SkillsMP](https://skillsmp.com/skills/agents365-ai-tldraw-skill-skills-tldraw-skill-skill-md) and [ClawHub](https://clawhub.ai/agents365-ai/tldraw-pro-skill).
 
-## Usage
+**Updating:** `/plugin update tldraw` (Claude Code), `skills update tldraw-skill` (SkillsMP), `clawhub update tldraw-pro-skill` (OpenClaw), or `git pull` for manual installs.
 
-Just describe what you want:
+## ⚡ Quick Start
+
+After installation, just describe what you want. For example, an ML model sketch:
 
 ```
-Create a microservices e-commerce architecture with API Gateway, auth/user/order/product/payment services,
-Kafka message queue, notification service, and separate databases for each service
+Sketch a Transformer encoder-decoder on a whiteboard: 6-layer encoder with
+self-attention, 6-layer decoder with cross-attention, input embeddings
+(batch × 512 × 768), positional encoding, and a final output projection.
+Annotate tensor shapes between layers and color-code by layer type.
 ```
 
-The agent will plan the layout, generate the `.tldr` JSON, export to PNG, self-check, and let you iterate.
+The skill plans the layout, generates the `.tldr` JSON, exports to PNG/SVG, self-checks the result, and lets you iterate.
 
-## Example
+## 🧩 Supported Diagram Types
 
-**Prompt:** *Create a microservices e-commerce architecture with Mobile/Web/Admin clients, API Gateway, User/Order/Product/Payment services, Kafka event bus, Notification service, and User DB / Order DB / Product DB / Redis Cache / Stripe API*
+| Category | Examples | Notable features |
+|---|---|---|
+| Architecture | microservices, cloud, network topology, deployment | Hub-center pattern for event buses; tier rows; `cloud`/`hexagon`/`triangle` shape vocabulary |
+| Flowcharts | business processes, workflows, decision trees | `ellipse` start/end, `diamond` decisions; auto-labels Yes/No branches |
+| Sequence diagrams | API call flows, request/response, async messages | Lifeline approximation (thin grey rectangles); dashed arrows for async / return |
+| ML / Deep Learning | Transformer, CNN, LSTM, GRU | Tensor shape annotations in node labels; layer-type color coding; skip-connection bends |
+| ERD | entity relationships, schemas | Multi-line entity labels (PK `*` / FK `>`); cardinality on arrow labels |
+| UML Class | high-level class diagrams | Multi-line class labels (attributes + methods); inheritance / association arrows (see [limitations](docs/limitations.md) for strict UML notation) |
 
-![Microservices Architecture](assets/example.png)
+## 🔄 How it works
 
-## Support
+1. **Check deps** — verifies `tldraw --version`; offers `npm install -g @kitschpatrol/tldraw-cli` if missing.
+2. **Plan layout** — picks geo shapes, assigns node positions on a 10px grid, spaces according to node count.
+3. **Generate `.tldr` JSON** — writes shape + arrow records with bound anchors and distributed `normalizedAnchor` points.
+4. **Export draft PNG** — `tldraw export diagram.tldr -f png --scale 2 -o ./`.
+5. **Self-check** — vision-enabled model reads the PNG, auto-fixes overlaps / clipped labels / arrow crossings (max 2 rounds). Skipped if vision isn't available.
+6. **Review loop** — shows the image, applies your targeted edits (color, label, add/remove node, move shape), re-exports — up to 5 rounds before suggesting tldraw.com for hand-tuning.
+7. **Final export** — re-exports the approved version to all requested formats and reports file paths.
+
+## 🆚 Comparison
+
+### vs Native Agent (no skill)
+
+| Feature | Native agent | tldraw-skill |
+|---|---|---|
+| Self-check after export | ❌ | ✅ vision-based, 2-round auto-fix |
+| Iterative review loop | ❌ manual re-prompt | ✅ targeted JSON edits, 5-round safety valve |
+| Diagram type presets | ❌ | ✅ 6 presets (Arch, Flow, Seq, ML, ERD, UML) |
+| Complexity-scaled spacing | ❌ | ✅ 200 / 280 / 350px tiers by node count |
+| Color palette | random / inconsistent | ✅ 10-color semantic system |
+| Arrow distribution on shape | random anchors → stacked | ✅ even spacing around perimeter |
+| Grid alignment | ❌ | ✅ 10px snap matches tldraw default |
+| Multi-line tensor / column labels | ad-hoc | ✅ embedded `\n` formatting baked in |
+
+## 🔗 Related Skills
+
+Part of the [Agents365-ai diagram-skill family](https://github.com/Agents365-ai) — pick the right tool for the job:
+
+| Skill | Style | Best for |
+|---|---|---|
+| [drawio-skill](https://github.com/Agents365-ai/drawio-skill) | Polished business diagrams | Stakeholder decks, strict UML, ML papers, network topologies |
+| [excalidraw-skill](https://github.com/Agents365-ai/excalidraw-skill) | Hand-drawn / sketchy | Whiteboard mockups, informal diagrams |
+| [mermaid-skill](https://github.com/Agents365-ai/mermaid-skill) | Text-based, auto-layout | README-embeddable, version-control friendly |
+| [plantuml-skill](https://github.com/Agents365-ai/plantuml-skill) | UML-focused | Class / sequence diagrams in CI pipelines |
+
+## 💬 Community
+
+- **Discord:** https://discord.gg/79JF5Atuk
+- **WeChat:** scan the QR code below
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Agents365-ai/images_payment/main/qrcode/agents365ai_wechat_1.png" width="200" alt="WeChat Community Group">
+</p>
+
+## ❤️ Support
 
 If this skill helps you, consider supporting the author:
 
@@ -89,13 +175,13 @@ If this skill helps you, consider supporting the author:
   </tr>
 </table>
 
-## Author
+## 👤 Author
 
 **Agents365-ai**
 
-- Bilibili: https://space.bilibili.com/441831884
 - GitHub: https://github.com/Agents365-ai
+- Bilibili: https://space.bilibili.com/441831884
 
-## License
+## 📄 License
 
-MIT
+[MIT](LICENSE)
