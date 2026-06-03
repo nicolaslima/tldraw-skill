@@ -42,6 +42,39 @@ User/Order/Product/Payment 微服务,Kafka 事件总线,Notification 服务,
 
 Skill 会在 10px 网格上规划形状位置,把箭头端点均匀分布在节点边缘,并在导出 PNG 后再次自检以提前发现重叠。
 
+### 更多图表风格
+
+下面每张都由一句自然语言提示词生成,并经过同一套自检流程导出:
+
+<table>
+  <tr>
+    <td align="center" width="50%"><img src="assets/example-flowchart.png" width="240" alt="带判定分支与重试回环的流程图"></td>
+    <td align="center" width="50%"><img src="assets/example-sequence.png" width="460" alt="登录 API 调用的时序图"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>流程图</b> —— <code>diamond</code> 判定节点、自动 Yes/No 标签、虚线重试回环</td>
+    <td align="center"><b>时序图</b> —— 点线生命线、实线调用 vs. 虚线返回</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="assets/example-ml.png" width="165" alt="带残差连接的 Transformer 编码器块"></td>
+    <td align="center"><img src="assets/example-erd.png" width="340" alt="电商 schema 的实体关系图"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>ML / Transformer</b> —— 张量形状标注、残差跳连</td>
+    <td align="center"><b>ERD</b> —— PK <code>*</code> / FK <code>&gt;</code> 标记、关系基数标签</td>
+  </tr>
+</table>
+
+<details>
+<summary>这四张用到的提示词</summary>
+
+- **流程图:** `画一个登录流程图:Start → 输入凭据 → 判定"是否有效?";是 → 加载仪表盘 → 成功;否 → 显示错误,然后回到输入凭据。`
+- **时序图:** `画一个登录 API 的时序图:Client → API → Auth → DB,包含 POST /login、validate、query user,以及虚线返回消息(user row、200 OK、session)。`
+- **ML / Transformer:** `画一个 Transformer 编码器块:输入嵌入 [B,512,768]、位置编码、多头注意力、Add & Norm、前馈 [768→3072→768]、Add & Norm、编码器输出 —— 带残差跳连。`
+- **ERD:** `画一个电商 ERD,包含 User、Order、Product、OrderItem 实体;PK 用 * 标记、FK 用 > 标记;展示 1:N 关系 places / contains / in。`
+
+</details>
+
 完整功能拆解见 [docs/features_CN.md](docs/features_CN.md)。已知限制(严格 UML 标记、PDF 导出、视觉模型依赖)见 [docs/limitations_CN.md](docs/limitations_CN.md)。
 
 ## 🚀 安装

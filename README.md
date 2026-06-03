@@ -42,6 +42,39 @@ service, and User DB / Order DB / Product DB / Redis Cache / Stripe API
 
 The skill plans shape positions on a 10px grid, distributes arrow endpoints around each node's perimeter, and re-checks the exported PNG to catch overlaps before showing you the result.
 
+### More diagram styles
+
+Each of these was generated from a single natural-language prompt and exported through the same self-check pipeline:
+
+<table>
+  <tr>
+    <td align="center" width="50%"><img src="assets/example-flowchart.png" width="240" alt="Flowchart with a decision branch and a retry loop"></td>
+    <td align="center" width="50%"><img src="assets/example-sequence.png" width="460" alt="Sequence diagram of a login API flow"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>Flowchart</b> — <code>diamond</code> decisions, auto Yes/No labels, dashed retry loop</td>
+    <td align="center"><b>Sequence</b> — dotted lifelines, solid calls vs. dashed returns</td>
+  </tr>
+  <tr>
+    <td align="center"><img src="assets/example-ml.png" width="165" alt="Transformer encoder block with residual skip-connections"></td>
+    <td align="center"><img src="assets/example-erd.png" width="340" alt="Entity-relationship diagram for an e-commerce schema"></td>
+  </tr>
+  <tr>
+    <td align="center"><b>ML / Transformer</b> — tensor-shape labels, residual skip-connections</td>
+    <td align="center"><b>ERD</b> — PK <code>*</code> / FK <code>&gt;</code> markers, cardinality on relationships</td>
+  </tr>
+</table>
+
+<details>
+<summary>Prompts used for these four</summary>
+
+- **Flowchart:** `Draw a login flowchart: Start → Enter Credentials → decision "Valid?"; Yes → Load Dashboard → Success; No → Show Error, then loop back to Enter Credentials.`
+- **Sequence:** `Sequence diagram for a login API: Client → API → Auth → DB, with POST /login, validate, query user, and dashed return messages (user row, 200 OK, session).`
+- **ML / Transformer:** `Sketch a Transformer encoder block: input embedding [B,512,768], positional encoding, multi-head attention, add & norm, feed forward [768→3072→768], add & norm, encoder output — with residual skip-connections.`
+- **ERD:** `E-commerce ERD with User, Order, Product, OrderItem entities; mark PK with * and FK with >; show 1:N relationships places / contains / in.`
+
+</details>
+
 Full feature breakdown in [docs/features.md](docs/features.md). Known limitations (strict UML notation, PDF export, vision requirement) in [docs/limitations.md](docs/limitations.md).
 
 ## 🚀 Installation
