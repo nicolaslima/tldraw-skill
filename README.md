@@ -136,6 +136,12 @@ The skill plans the layout, generates the `.tldr` JSON, exports to PNG/SVG, self
 
 ## 🔄 How it works
 
+<p align="center">
+  <img src="assets/workflow.png" width="380" alt="The skill's 7-step pipeline: check deps → plan layout → generate .tldr → export PNG → self-check → review loop → final export, with a refine-and-repeat loop from review back to generate">
+</p>
+
+<p align="center"><sub><i>This diagram was drawn by the skill itself — see <a href="assets/workflow.tldr">assets/workflow.tldr</a>.</i></sub></p>
+
 1. **Check deps** — verifies `tldraw --version`; offers `npm install -g @kitschpatrol/tldraw-cli` if missing.
 2. **Plan layout** — picks geo shapes, assigns node positions on a 10px grid, spaces according to node count.
 3. **Generate `.tldr` JSON** — writes shape + arrow records with bound anchors and distributed `normalizedAnchor` points.
