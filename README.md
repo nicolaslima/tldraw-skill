@@ -77,16 +77,22 @@ Each of these was generated from a single natural-language prompt and exported t
 
 ### It's a whiteboard — it can sketch, too
 
-tldraw isn't only boxes and arrows. Because it's a hand-drawn **whiteboard** with a freehand `draw` shape, the skill can also compose figurative sketches — geo primitives (ellipse / triangle / heart) plus freehand strokes for the irregular bits (whiskers, a wagging tail):
+tldraw isn't only boxes and arrows. Because it's a hand-drawn **whiteboard** with a freehand `draw` shape, the skill can also draw figuratively — geo primitives (ellipse / triangle / heart) plus freehand strokes, or pure freehand curves generated from parametric equations:
 
 <table>
   <tr>
-    <td align="center" width="50%"><img src="assets/example-cat.png" width="210" alt="A cat sketched from ellipses, triangles, a heart nose, with freehand whiskers and a curled tail"></td>
-    <td align="center" width="50%"><img src="assets/example-dog.png" width="220" alt="A dog sketched with floppy ears, a tongue, and a freehand wagging tail"></td>
+    <td align="center"><img src="assets/example-cat.png" width="150" alt="A cat from ellipses, triangles, a heart nose, with freehand whiskers and a curled tail"></td>
+    <td align="center"><img src="assets/example-dog.png" width="160" alt="A dog with floppy ears, a tongue, and a freehand wagging tail"></td>
+    <td align="center"><img src="assets/example-spiral.png" width="195" alt="A hand-drawn Archimedean spiral"></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="assets/example-flower.png" width="125" alt="A flower whose petals are a rose curve, with stem and leaves"></td>
+    <td align="center"><img src="assets/example-butterfly.png" width="215" alt="A butterfly traced by the Temple Fay butterfly curve"></td>
+    <td align="center"><img src="assets/example-tree.png" width="150" alt="A stylized tree with a wobbly freehand canopy"></td>
   </tr>
 </table>
 
-<sub>Not what the skill is <i>for</i> — it's a diagram tool — but a fun demonstration of the freehand <code>draw</code> shape and the hand-drawn aesthetic. Sources: <a href="assets/example-cat.tldr">example-cat.tldr</a>, <a href="assets/example-dog.tldr">example-dog.tldr</a>.</sub>
+<sub><b>Cat / dog</b> — geo primitives + freehand whiskers and tails. <b>Spiral / flower / butterfly / tree</b> — pure freehand <code>draw</code> strokes generated from parametric curves (the butterfly is a single 1,400-point stroke). Not what the skill is <i>for</i> — it's a diagram tool — but a fun demonstration of the freehand <code>draw</code> shape and the hand-drawn aesthetic. Sources under <a href="assets/">assets/</a> (<code>example-cat/dog/spiral/flower/butterfly/tree.tldr</code>).</sub>
 
 Full feature breakdown in [docs/features.md](docs/features.md). Known limitations (strict UML notation, PDF export, vision requirement) in [docs/limitations.md](docs/limitations.md).
 
