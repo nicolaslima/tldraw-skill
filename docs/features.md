@@ -26,7 +26,7 @@
 | Proactive triggers | No — only when explicitly asked | Yes — auto-suggests when 3+ components |
 | Layout guidelines | None — varies by run | Complexity-scaled spacing, routing corridors, hub placement |
 | Diagram type presets | No | Yes — 6 presets (Architecture, Flowchart, Sequence, ML/DL, ERD, UML) |
-| Color palette | Random / inconsistent | 10-color semantic system (blue=services, green=DB, violet=auth...) |
+| Color palette | Random / inconsistent | 13-color semantic system (blue=services, green=DB, violet=auth...) |
 | Arrow distribution rules | Basic | Distribute `normalizedAnchor` across shape perimeter to prevent stacking |
 | Index ordering rules | Often wrong (uses `b1`, `c1`) | Strict `a*` format with z-order conventions |
 | Multi-platform metadata | No | Yes — OpenClaw, Hermes, SkillsMP namespaces |

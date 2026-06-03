@@ -26,7 +26,7 @@ A skill that turns natural-language descriptions into hand-drawn-style `.tldr` w
 - **Vision-based self-check + auto-fix** — reads its own PNG output and auto-fixes overlaps, clipped labels, missing arrows, off-canvas shapes, and stacked edges (up to 2 rounds; requires a vision-enabled model)
 - **Iterative review loop** — targeted JSON edits, up to 5 rounds, then suggests opening in tldraw.com for fine-tuning
 - **Complexity-scaled layout** — spacing (200 / 280 / 350px) grows with node count; routing corridors and hub placement built in
-- **Semantic 10-color palette** — `blue` services, `green` databases, `violet` auth, `orange` queues, `yellow` decisions, etc. — consistent across runs
+- **Semantic 13-color palette** — `blue` services, `green` databases, `violet` auth, `orange` queues, `yellow` decisions, etc. — consistent across runs
 - **Zero browser automation** — `tldraw-cli` runs anywhere Node runs; identical setup on macOS, Linux, Windows (no Chromium, no Playwright)
 
 ## 🖼️ Examples
@@ -121,7 +121,7 @@ The skill plans the layout, generates the `.tldr` JSON, exports to PNG/SVG, self
 | Iterative review loop | ❌ manual re-prompt | ✅ targeted JSON edits, 5-round safety valve |
 | Diagram type presets | ❌ | ✅ 6 presets (Arch, Flow, Seq, ML, ERD, UML) |
 | Complexity-scaled spacing | ❌ | ✅ 200 / 280 / 350px tiers by node count |
-| Color palette | random / inconsistent | ✅ 10-color semantic system |
+| Color palette | random / inconsistent | ✅ 13-color semantic system |
 | Arrow distribution on shape | random anchors → stacked | ✅ even spacing around perimeter |
 | Grid alignment | ❌ | ✅ 10px snap matches tldraw default |
 | Multi-line tensor / column labels | ad-hoc | ✅ embedded `\n` formatting baked in |

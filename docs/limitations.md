@@ -2,7 +2,7 @@
 
 [← Back to README](../README.md)
 
-- **Native UML notation**: tldraw arrowheads are limited (no hollow triangles for inheritance). Use drawio-skill for strict UML/ERD figures intended for academic papers
-- **No native containers/swimlanes**: tldraw's grouping model differs from drawio. Use color and spacing for visual grouping instead
+- **Native UML notation**: tldraw renders filled `triangle`/`diamond` arrowheads (fine for inheritance/composition *sketches*) but not the *hollow* heads strict UML uses. For publication-grade UML/ERD figures, use drawio-skill
+- **Swimlanes / nested auto-layout**: tldraw *does* have native `frame` containers (labeled boxes you can nest shapes inside, and stack to approximate swimlanes), but no automatic layout *within* them — child positions are still placed by hand. For drawio-style swimlane pools with auto-flow, use drawio-skill
 - **PDF export not supported**: tldraw-cli supports PNG and SVG only. Convert SVG to PDF post-hoc if needed (e.g. `rsvg-convert`)
 - **Self-check requires vision**: The auto-fix step reads exported PNGs using the model's vision capability. Models without vision support skip this step
