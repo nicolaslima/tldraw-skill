@@ -75,6 +75,19 @@ Each of these was generated from a single natural-language prompt and exported t
 
 </details>
 
+### It's a whiteboard — it can sketch, too
+
+tldraw isn't only boxes and arrows. Because it's a hand-drawn **whiteboard** with a freehand `draw` shape, the skill can also compose figurative sketches — geo primitives (ellipse / triangle / heart) plus freehand strokes for the irregular bits (whiskers, a wagging tail):
+
+<table>
+  <tr>
+    <td align="center" width="50%"><img src="assets/example-cat.png" width="210" alt="A cat sketched from ellipses, triangles, a heart nose, with freehand whiskers and a curled tail"></td>
+    <td align="center" width="50%"><img src="assets/example-dog.png" width="220" alt="A dog sketched with floppy ears, a tongue, and a freehand wagging tail"></td>
+  </tr>
+</table>
+
+<sub>Not what the skill is <i>for</i> — it's a diagram tool — but a fun demonstration of the freehand <code>draw</code> shape and the hand-drawn aesthetic. Sources: <a href="assets/example-cat.tldr">example-cat.tldr</a>, <a href="assets/example-dog.tldr">example-dog.tldr</a>.</sub>
+
 Full feature breakdown in [docs/features.md](docs/features.md). Known limitations (strict UML notation, PDF export, vision requirement) in [docs/limitations.md](docs/limitations.md).
 
 ## 🚀 Installation
