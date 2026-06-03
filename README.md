@@ -184,6 +184,20 @@ The skill plans the layout, generates the `.tldr` JSON, exports to PNG/SVG, self
 | Grid alignment | ❌ | ✅ 10px snap matches tldraw default |
 | Multi-line tensor / column labels | ad-hoc | ✅ embedded `\n` formatting baked in |
 
+## 🎯 When to use (and when not to)
+
+**Good fit:**
+- Whiteboard / hand-drawn-style diagrams — architecture, flowcharts, sequence, ERD, UML *sketches*, mind maps
+- A casual, sketchy aesthetic; freehand strokes and figurative doodles (the `draw` shape)
+- Quick visual explainers where a polished, pixel-precise look isn't the goal
+
+**Reach for a sibling skill instead when you need:**
+- **Logos, solid-color graphics, or filled icons** — tldraw has no opaque fill (`solid` renders as a light tint, so white-on-dark artwork can't be reproduced) → [drawio-skill](https://github.com/Agents365-ai/drawio-skill) or your original vector source
+- **Precise angular geometry / strict vector shapes** → [drawio-skill](https://github.com/Agents365-ai/drawio-skill)
+- **Strict, publication-grade UML** (hollow inheritance arrows, etc.) → [plantuml-skill](https://github.com/Agents365-ai/plantuml-skill) or [drawio-skill](https://github.com/Agents365-ai/drawio-skill)
+- **Automatic layout of many nodes** (tldraw needs manual coordinates) → [mermaid-skill](https://github.com/Agents365-ai/mermaid-skill)
+- **Pixel-faithful reproduction of an existing image** — not what any diagram skill is for
+
 ## 🔗 Related Skills
 
 Part of the [Agents365-ai diagram-skill family](https://github.com/Agents365-ai) — pick the right tool for the job:
