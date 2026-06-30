@@ -754,6 +754,106 @@ Label the arrow with cardinality (e.g., `1..*`, `0..1`) via `props.text`.
 
 ---
 
+## Shape Library
+
+Pre-built component shapes for common infrastructure and technology icons. Each entry provides the focused-format properties to create the shape via API. All shapes use `size: "m"`, `font: "sans"`, `fill: "semi"` unless noted.
+
+### Infrastructure Shapes
+
+| Component | `_type` | Size (w×h) | Color | Notes |
+|-----------|---------|-------------|-------|-------|
+| **Database** | `ellipse` | 180×120 | `green` | Single ellipse. For a stacked look, create 2–3 overlapping ellipses at y+5 offsets |
+| **Server** | `rectangle` | 200×140 | `blue` | Standard server block |
+| **Queue** | `hexagon` | 180×100 | `orange` | Message queue / event bus |
+| **Load Balancer** | `triangle` | 160×120 | `violet` | Pointing up |
+| **Cache** | `ellipse` | 140×100 | `yellow` | Smaller than database |
+| **Cloud** | `cloud` | 220×140 | `red` | External service / internet |
+| **API Gateway** | `rectangle` | 240×100 | `violet` | Wide, centered above services |
+| **Container** | `rectangle` (dashed) | 200×120 | `grey` | Use `dash: "dashed"` for containerized apps |
+| **Data Lake** | `rectangle` | 240×160 | `light-blue` | Large storage block |
+| **Stream** | `fat-arrow-right` | 200×80 | `orange` | Data stream / pipeline |
+
+### Technology Icons
+
+| Icon | `_type` | Size (w×h) | Color | Notes |
+|------|---------|-------------|-------|-------|
+| **Spark** | `star` | 100×100 | `orange` | Apache Spark processing |
+| **Airflow** | `hexagon` | 120×80 | `light-green` | DAG orchestration |
+| **Kafka** | `hexagon` | 140×80 | `orange` | Event streaming |
+| **Lambda** | `trapezoid` | 140×100 | `orange` | AWS Lambda function |
+| **S3** | `rectangle` | 160×100 | `green` | AWS S3 storage |
+| **Terraform** | `rectangle` | 160×80 | `violet` | IaC provisioning |
+| **Neo4j** | `diamond` | 120×120 | `light-blue` | Graph database |
+| **Python** | `rectangle` | 140×80 | `blue` | Python runtime |
+| **Docker** | `rectangle` (dashed) | 140×100 | `blue` | Container runtime |
+| **K8s** | `hexagon` | 140×100 | `blue` | Kubernetes |
+| **GitHub** | `cloud` | 140×80 | `grey` | GitHub / CI |
+| **PostgreSQL** | `ellipse` | 140×80 | `light-blue` | Relational database |
+
+### Data Pipeline Shapes
+
+Pre-built combinations for common data engineering patterns:
+
+**Pipeline Stage** (single processing step):
+```bash
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "editor.createShape({ _type: \"rectangle\", shapeId: \"stage1\", x: 100, y: 100, w: 200, h: 80, color: \"blue\", fill: \"semi\", text: \"Extract\" }); return { id: \"stage1\" }"}'
+```
+
+**Pipeline with arrow** (two stages connected):
+```bash
+# Stage 1
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "editor.createShape({ _type: \"rectangle\", shapeId: \"s1\", x: 100, y: 100, w: 200, h: 80, color: \"blue\", fill: \"semi\", text: \"Extract\" }); return { id: \"s1\" }"}'
+
+# Stage 2 (350px gap for arrow label)
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "editor.createShape({ _type: \"rectangle\", shapeId: \"s2\", x: 650, y: 100, w: 200, h: 80, color: \"green\", fill: \"semi\", text: \"Load\" }); return { id: \"s2\" }"}'
+
+# Arrow
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "editor.createShape({ _type: \"arrow\", shapeId: \"a1\", fromId: \"s1\", toId: \"s2\", x1: 300, y1: 140, x2: 650, y2: 140, color: \"black\", text: \"ETL\" }); return { id: \"a1\" }"}'
+```
+
+**Medallion Architecture** (Bronze/Silver/Gold):
+```bash
+# Bronze layer
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "editor.createShape({ _type: \"rectangle\", shapeId: \"bronze\", x: 100, y: 100, w: 200, h: 100, color: \"orange\", fill: \"semi\", text: \"Bronze\\nRaw Data\" }); return { id: \"bronze\" }"}'
+
+# Silver layer (below Bronze)
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "editor.createShape({ _type: \"rectangle\", shapeId: \"silver\", x: 100, y: 250, w: 200, h: 100, color: \"grey\", fill: \"semi\", text: \"Silver\\nCleaned Data\" }); return { id: \"silver\" }"}'
+
+# Gold layer (below Silver)
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "editor.createShape({ _type: \"rectangle\", shapeId: \"gold\", x: 100, y: 400, w: 200, h: 100, color: \"yellow\", fill: \"semi\", text: \"Gold\\nAggregated\" }); return { id: \"gold\" }"}'
+
+# Arrows between layers
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "editor.createShape({ _type: \"arrow\", shapeId: \"ab\", fromId: \"bronze\", toId: \"silver\", x1: 200, y1: 200, x2: 200, y2: 250, color: \"black\", text: \"\" }); editor.createShape({ _type: \"arrow\", shapeId: \"as\", fromId: \"silver\", toId: \"gold\", x1: 200, y1: 350, x2: 200, y2: 400, color: \"black\", text: \"\" }); return { created: [\"ab\",\"as\"] }"}'
+```
+
+### Quick Reference: Common Shape Combinations
+
+| Diagram Type | Shapes | Layout |
+|-------------|--------|--------|
+| **ETL Pipeline** | 3× rectangles + 2× arrows | Horizontal, 350px gap |
+| **Medallion** | 3× rectangles + 2× arrows | Vertical stack, 150px gap |
+| **Microservices** | 1× cloud + 4× rectangles + 1× hexagon + arrows | Cloud top, services mid, bus center |
+| **Data Lake** | 1× rectangle (lake) + 3× ellipses (sources) + arrows | Sources left, lake right |
+| **CI/CD** | 1× cloud (GitHub) + 3× rectangles (build/test/deploy) + arrows | Horizontal flow |
+
+---
+
 ## Export Commands
 
 ```bash
