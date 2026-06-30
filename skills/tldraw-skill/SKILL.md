@@ -645,6 +645,9 @@ Example: a size-`m` box labeled `"API Gateway"` (11 chars, 1 line) → `w ≈ 11
 - Center-align a child node under its parent (same center x) to avoid diagonal routing.
 - **Event bus pattern**: place the bus (hexagon) in the **center of the service row**, not below — services on either side reach it with short horizontal arrows (`normalizedAnchor.x = 1` left side, `0` right side), eliminating crossings.
 - Horizontal connections never cross vertical nodes in the same row; use them for peer-to-peer and publish connections.
+- **Arrow label gap**: when an arrow has a text label, ensure the gap between the two connected shapes is wide enough so the label fits on one line. A gap of ~350px comfortably fits labels up to ~12 characters. For longer labels, increase the gap or use shorter text.
+- **Icon shapes with labels**: shapes like `check-box`, `x-box`, `star` have built-in iconography that conflicts with text labels. For these shapes, set `text: ""` (empty) and place a separate `text` shape positioned below the icon area. For a 180×180 check-box, place the label text at `y + 140` to sit below the checkmark.
+- **Triangle text positioning**: the `triangle` shape's text auto-centers near the top of the shape. For proper centering, use a taller triangle (e.g. `h: 220` for a 3-line label) or place text as a separate shape. A triangle with `h: 220` comfortably fits a single-line label centered.
 
 **Avoiding arrow-shape overlap:**
 - Before finalizing coordinates, trace each arrow path mentally — if it must cross an unrelated shape, either move the shape or use `bend` to curve around.
