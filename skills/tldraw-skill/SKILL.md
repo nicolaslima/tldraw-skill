@@ -19,7 +19,14 @@ metadata:
 
 ## Overview
 
-Generate modern whiteboard-style diagrams as `.tldr` JSON files and export to PNG/SVG using `@kitschpatrol/tldraw-cli`. tldraw produces clean hand-drawn aesthetic diagrams with rich shape libraries and smooth arrow routing — well-suited for casual or whiteboard-style visualizations.
+Generate modern whiteboard-style diagrams using **two modes**:
+
+| Mode | Best for | Requires |
+|------|----------|----------|
+| **Local HTTP API** | Real-time editing on the open tldraw Desktop app | tldraw Desktop running on `localhost:7236` |
+| **.tldr + CLI** | Exporting diagrams to PNG/SVG files | `@kitschpatrol/tldraw-cli` (npm) |
+
+tldraw produces clean hand-drawn aesthetic diagrams with rich shape libraries and smooth arrow routing — well-suited for casual or whiteboard-style visualizations.
 
 **Format:** `.tldr` JSON
 **Export:** PNG, SVG (via `@kitschpatrol/tldraw-cli`)
@@ -258,7 +265,7 @@ Before starting, assess whether the user's request is specific enough. If key de
 
 Skip clarification if the request already specifies these details or is clearly simple (e.g., "draw a flowchart of X").
 
-1. **Check deps** — verify `tldraw --version` succeeds; if missing, run `npm install -g @kitschpatrol/tldraw-cli`.
+1. **Check deps** — verify `tldraw --version` succeeds for CLI mode, or `curl -s http://localhost:7236/api/doc` for API mode. If missing, run `npm install -g @kitschpatrol/tldraw-cli` or open tldraw Desktop.
 2. **Plan** — identify shapes (geo type per node), connections (arrows with source/target), and layout (TB or LR, group by tier/role). Sketch a coordinate grid before writing JSON.
 3. **Generate** — write the `.tldr` JSON file. Default output dir is the user's working dir; if the user specified a path or directory (e.g. `./artifacts/`), `mkdir -p` it first and write there. Apply the same dir choice to PNG/SVG exports in steps 4 and 7.
 4. **Export draft** — run CLI to produce a PNG for preview.
@@ -288,18 +295,18 @@ tldraw's own AI agent flags exactly three structural defects — **text overflow
 
 After self-check, show the exported image and ask the user for feedback.
 
-**Targeted edit rules** — for each type of feedback, apply the minimal JSON change:
+**Targeted edit rules** — for each type of feedback, apply the minimal change:
 
-| User request | JSON edit action |
-|-------------|-----------------|
-| Change color of X | Find shape by `props.text` matching X, update `props.color` |
-| Add a new node | Append a new shape record with next available index, position near related nodes |
-| Remove a node | Delete the shape record and any arrow records bound to it |
-| Move shape X | Update the shape's `x`/`y` fields |
-| Resize shape X | Update `props.w`/`props.h` |
-| Add arrow from A to B | Append a new arrow record binding to A and B's shape ids |
-| Change label text | Update `props.text` on the matching shape or arrow |
-| Change layout direction | **Full regeneration** — replan the grid and rebuild |
+| User request | .tldr JSON action | API /exec action |
+|-------------|-------------------|-----------------|
+| Change color of X | Find shape by `props.text`, update `props.color` | `editor.updateShape({ _type, shapeId, color })` |
+| Add a new node | Append a new shape record with next available index | `editor.createShape({ _type, shapeId, x, y, w, h, ... })` |
+| Remove a node | Delete the shape record and any arrow records bound to it | `editor.deleteShape(shapeId)` |
+| Move shape X | Update the shape's `x`/`y` fields | `editor.updateShape({ _type, shapeId, x, y })` |
+| Resize shape X | Update `props.w`/`props.h` | `editor.updateShape({ _type, shapeId, w, h })` |
+| Add arrow from A to B | Append a new arrow record binding to A and B's shape ids | `editor.createShape({ _type: "arrow", fromId, toId, ... })` |
+| Change label text | Update `props.text` on the matching shape or arrow | `editor.updateShape({ _type, shapeId, text })` |
+| Change layout direction | **Full regeneration** — replan the grid and rebuild | **Full regeneration** — replan the grid and rebuild |
 
 **Rules:**
 - For single-element changes: edit the existing JSON in place — preserves layout tuning from prior iterations.
@@ -801,6 +808,10 @@ Or upload to https://tldraw.com (drag-and-drop the `.tldr` file) for browser edi
 | Multi-line label | Use a real newline character inside the JSON string (`"text": "Line1\nLine2"`); tldraw respects `\n` |
 | Arrow crosses shape | Use `bend` to curve around, or move endpoint to a different `normalizedAnchor` |
 | Iteration loop never ends | After 5 rounds, suggest the user open `.tldr` in tldraw.com for fine-tuning |
+| **API: `_type` not `type`** | In `/exec`, use `_type: "rectangle"` not `type: "geo"`. The focused-format proxy expects `_type`. |
+| **API: Arrow not appearing** | Ensure `fromId`/`toId` match existing shape IDs. Arrow `x`/`y` are always `0, 0`. |
+| **API: Screenshot shows window chrome** | Call `editor.zoomToFit()` before screenshot. If `captureMode` is `'window'`, the image may include UI. |
+| **API: Shape not found** | The proxy accepts `"foo"` or `"shape:foo"` — both work. Use `editor.getCurrentPageShapes()` to list IDs. |
 
 ---
 
