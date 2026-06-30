@@ -1,11 +1,18 @@
 ---
 name: tldraw-skill
-description: Use when user requests diagrams, flowcharts, architecture charts, or visualizations. Also use proactively when explaining systems with 3+ components, complex data flows, or relationships that benefit from visual representation. Generates .tldr JSON files and exports to PNG/SVG locally using @kitschpatrol/tldraw-cli.
+description: Use when user requests diagrams, flowcharts, architecture charts, or visualizations. Also use proactively when explaining systems with 3+ components, complex data flows, or relationships that benefit from visual representation. Generates .tldr JSON files and exports to PNG/SVG locally using @kitschpatrol/tldraw-cli, or connects to tldraw Desktop local HTTP API (localhost:7236) for real-time canvas editing.
 license: MIT
-homepage: https://github.com/Agents365-ai/tldraw-skill
-compatibility: Requires Node.js + @kitschpatrol/tldraw-cli on PATH (macOS/Linux/Windows). Self-check step requires a vision-enabled model (e.g., Claude Sonnet/Opus); gracefully skipped if unavailable.
+homepage: https://github.com/nicolaslima/tldraw-skill
+compatibility: Requires Node.js + @kitschpatrol/tldraw-cli on PATH for CLI export, or tldraw Desktop running (localhost:7236) for API mode. macOS/Linux/Windows. Self-check step requires a vision-enabled model (e.g., Claude Sonnet/Opus); gracefully skipped if unavailable.
 platforms: [macos, linux, windows]
-metadata: {"openclaw":{"requires":{"bins":["tldraw"]},"emoji":"📝","os":["darwin","linux","win32"],"install":[{"id":"npm-tldraw","kind":"npm","package":"@kitschpatrol/tldraw-cli","global":true,"bins":["tldraw"],"label":"Install tldraw-cli via npm"}]},"hermes":{"tags":["tldraw","diagram","flowchart","architecture","whiteboard","visualization"],"category":"design","requires_tools":["tldraw"],"related_skills":["drawio","mermaid","excalidraw","plantuml"]},"author":"Agents365-ai","version":"1.2.1"}
+metadata:
+  hermes:
+    tags: [tldraw, diagram, flowchart, architecture, whiteboard, visualization]
+    category: design
+    requires_tools: [tldraw]
+    related_skills: [excalidraw, drawio, mermaid]
+  author: nicolaslima (forked from Agents365-ai)
+  version: 2.0.0
 ---
 
 # tldraw Whiteboard Diagrams
@@ -56,6 +63,190 @@ npx puppeteer browsers install chrome@<version-from-error>
 ```
 
 (Installs to `~/.cache/puppeteer`; only needed once per CLI version.)
+
+---
+
+## Local HTTP API Mode (tldraw Desktop)
+
+The tldraw Desktop app (v1.3.0+) runs a local HTTP server on `localhost:7236` for real-time canvas editing. Use this mode when the app is already open and you want to create/modify shapes directly.
+
+### Check if tldraw Desktop is running
+
+```bash
+# List open documents
+curl -s http://localhost:7236/api/doc | python3 -m json.tool
+
+# If it fails, open the app
+open /Applications/tldraw.app
+```
+
+Connection info is also at `~/Library/Application Support/tldraw/server.json`.
+
+### API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/` | API documentation (plain text) |
+| `GET` | `/api/doc` | List all open documents (`?name=` filter) |
+| `GET` | `/api/doc/:id/shapes` | Get all shapes on current page |
+| `GET` | `/api/doc/:id/screenshot` | Screenshot as JPEG (`?size=`, `?bounds=`) |
+| `POST` | `/api/doc/:id/exec` | Execute arbitrary editor code |
+| `POST` | `/api/doc/:id/actions` | Execute structured canvas actions |
+| `POST` | `/api/search` | Query API reference + live state |
+
+### Focused-Format (API /exec)
+
+The `/exec` endpoint uses **focused-format** — flat properties with `_type` instead of `type`, no nesting in `props`.
+
+**Create a rectangle:**
+
+```bash
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "editor.createShape({ _type: \"rectangle\", shapeId: \"box1\", x: 100, y: 100, w: 260, h: 140, color: \"blue\", fill: \"semi\", text: \"Service A\" }); return { created: [\"box1\"] }"}'
+```
+
+**Create an arrow between shapes:**
+
+```bash
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "editor.createShape({ _type: \"arrow\", shapeId: \"arr1\", fromId: \"box1\", toId: \"box2\", x1: 360, y1: 170, x2: 520, y2: 170, color: \"black\", text: \"\" }); return { id: \"arr1\" }"}'
+```
+
+**Create text:**
+
+```bash
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "editor.createShape({ _type: \"text\", shapeId: \"title1\", x: 60, y: 40, text: \"Diagram Title\", color: \"black\", fontSize: 28, font: \"sans\" }); return { id: \"title1\" }"}'
+```
+
+**Create a sticky note:**
+
+```bash
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "editor.createShape({ _type: \"note\", shapeId: \"note1\", x: 200, y: 200, color: \"yellow\", text: \"TODO: review\" }); return { id: \"note1\" }"}'
+```
+
+**Create a frame (container):**
+
+```bash
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "editor.createShape({ _type: \"frame\", shapeId: \"frame1\", x: 60, y: 60, w: 360, h: 220, name: \"Backend Tier\", color: \"black\" }); return { id: \"frame1\" }"}'
+```
+
+**Update an existing shape:**
+
+```bash
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "editor.updateShape({ _type: \"rectangle\", shapeId: \"box1\", text: \"New Label\" }); return { updated: \"box1\" }"}'
+```
+
+**Delete a shape:**
+
+```bash
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "editor.deleteShape(\"box1\"); return { deleted: \"box1\" }"}'
+```
+
+**Clear the entire page:**
+
+```bash
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "editor.getCurrentPageShapeIds().forEach(id => editor.deleteShape(id)); return { cleared: true }"}'
+```
+
+**Zoom to fit all shapes:**
+
+```bash
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "editor.zoomToFit({ animation: { duration: 200 } }); return { zoomed: true }"}'
+```
+
+**Create a page and switch to it:**
+
+```bash
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "const name = \"New Page\"; let p = editor.getPages().find(pg => pg.name === name); if (!p) { editor.createPage({ name }); p = editor.getPages().find(pg => pg.name === name); } editor.setCurrentPage(p.id); return { page: p.id }"}'
+```
+
+**Read shapes on the current page:**
+
+```bash
+curl -s -X POST "http://localhost:7236/api/doc/DOC_ID/exec" \
+  -H 'Content-Type: application/json' \
+  -d '{"code": "const shapes = editor.getCurrentPageShapes(); return { count: shapes.length, ids: shapes.map(s => s.shapeId) }"}'
+```
+
+### Focused-Format Properties Reference
+
+**Geo shape properties (rectangle, ellipse, diamond, etc.):**
+- `_type`: shape type (see Geo Types table below)
+- `shapeId`: unique identifier (e.g. `"box1"`, `"title"`)
+- `x`, `y`: position on canvas
+- `w`, `h`: width and height
+- `color`: color name (see Color Palette table below)
+- `fill`: `"none"`, `"semi"` (recommended), `"solid"`, `"pattern"`
+- `text`: label text (use `\n` for multi-line)
+- `dash`: `"draw"` (default), `"solid"`, `"dashed"`, `"dotted"`
+- `size`: `"s"`, `"m"`, `"l"`, `"xl"`
+- `font`: `"draw"`, `"sans"`, `"serif"`, `"mono"`
+
+**Arrow properties:**
+- `_type`: `"arrow"`
+- `shapeId`: unique identifier
+- `fromId`, `toId`: source and target shape IDs
+- `x1`, `y1`, `x2`, `y2`: endpoint coordinates
+- `color`: arrow color
+- `text`: optional label
+- `dash`: `"draw"`, `"solid"`, `"dashed"`, `"dotted"`
+- `arrowheadStart`, `arrowheadEnd`: see Arrowheads table below
+
+**Text properties:**
+- `_type`: `"text"`
+- `shapeId`: unique identifier
+- `x`, `y`: position
+- `text`: content
+- `color`: text color
+- `fontSize`: font size in pixels
+- `font`: `"draw"`, `"sans"`, `"serif"`, `"mono"`
+
+**Note (sticky note) properties:**
+- `_type`: `"note"`
+- `shapeId`: unique identifier
+- `x`, `y`: position
+- `color`: note color (e.g. `"yellow"`)
+- `text`: content (auto-grows, no `w`/`h` needed)
+
+**Frame (container) properties:**
+- `_type`: `"frame"`
+- `shapeId`: unique identifier
+- `x`, `y`: position
+- `w`, `h`: width and height
+- `name`: title shown at top-left
+- `color`: border color
+
+### Screenshot params
+
+- `size`: `small` (768px), `medium` (1536px), `large` (3072px), `full` (5000px)
+- `bounds`: crop area `bounds=x,y,w,h`
+
+### Actions (POST /api/doc/:id/actions)
+
+Each action has a `_type` field:
+`create`, `update`, `delete`, `clear`, `move`, `place`, `label`, `align`,
+`distribute`, `stack`, `bringToFront`, `sendToBack`, `resize`, `rotate`,
+`pen`, `setMyView`
+
+---
 
 ## Workflow
 
@@ -619,6 +810,21 @@ When tools are unavailable, degrade gracefully:
 
 | Scenario | Behavior |
 |----------|----------|
+| tldraw Desktop not running | Tell user to open the app, or generate `.tldr` JSON for drag-and-drop into https://tldraw.com |
 | `tldraw-cli` missing | Generate `.tldr` JSON only; instruct user to drag-and-drop into https://tldraw.com or install the CLI |
 | Vision unavailable for self-check | Skip self-check (step 5); proceed directly to showing user the exported PNG |
 | Export fails | Validate JSON with `python3 -m json.tool`; deliver the `.tldr` file and suggest opening in tldraw.com |
+
+---
+
+## Pitfalls (learned the hard way)
+
+- **NEVER write custom Python code** to interact with tldraw. Use curl with the HTTP API or the `.tldr` format.
+- **In focused-format (/exec), use `_type` not `type`.** The API uses a focused-format proxy; passing `type` will throw.
+- **Always call `editor.zoomToFit()` before screenshot** via API to ensure all shapes are visible.
+- **Shape IDs are stable** while the document is open. Re-fetch after close/reopen.
+- **Multi-line text**: use `\n` literal inside the JSON string.
+- **Default size**: text-bearing shapes ~300x200, gap between shapes ~200px.
+- **The /exec proxy** accepts `"foo"` or `"shape:foo"` as shapeId — both work.
+- **`api.getScreenshot` returns a file path**, not image data — open the file yourself to look at it.
+- **If `captureMode` is `'window'`**, the image may include UI chrome and may not honor canvas bounds.
